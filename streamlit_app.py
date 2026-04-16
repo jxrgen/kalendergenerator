@@ -67,42 +67,40 @@ if uploaded_file:
         st.dataframe(df, use_container_width=True)
         
         st.divider()
-        st.subheader("Vælg dit format")
+        st.subheader("1. Vælg dit format og hent filen")
         
         col1, col2, col3 = st.columns(3)
-        
         with col1:
-            # Google CSV
-            csv_google = df.to_csv(index=False).encode('utf-8-sig')
-            st.download_button(
-                label="🔵 Google Kalender (CSV)",
-                data=csv_google,
-                file_name="google_kalender.csv",
-                mime="text/csv",
-                use_container_width=True
-            )
-            
+            st.download_button("🔵 Google Kalender (CSV)", df.to_csv(index=False).encode('utf-8-sig'), "google_kalender.csv", "text/csv", use_container_width=True)
         with col2:
-            # Microsoft Outlook CSV (Specifikke headere)
-            outlook_df = df.copy()
-            csv_outlook = outlook_df.to_csv(index=False).encode('utf-16') # Outlook foretrækker ofte UTF-16
-            st.download_button(
-                label="🔴 Microsoft Outlook (CSV)",
-                data=csv_outlook,
-                file_name="outlook_kalender.csv",
-                mime="text/csv",
-                use_container_width=True
-            )
-            
+            st.download_button("🔴 Microsoft Outlook (CSV)", df.to_csv(index=False).encode('utf-16'), "outlook_kalender.csv", "text/csv", use_container_width=True)
         with col3:
-            # Apple ICS
-            ics_data = create_ics(df)
-            st.download_button(
-                label="🍏 Apple Kalender (ICS)",
-                data=ics_data,
-                file_name="apple_kalender.ics",
-                mime="text/calendar",
-                use_container_width=True
-            )
+            st.download_button("🍏 Apple Kalender (ICS)", create_ics(df), "apple_kalender.ics", "text/calendar", use_container_width=True)
+            
+        st.divider()
+        st.subheader("2. Sådan importerer du filen")
+        
+        with st.expander("🔵 Vejledning til Google Kalender"):
+            st.write("""
+            1. Åbn **calendar.google.com** på en computer.
+            2. Klik på **Indstillinger** (tandhjulet øverst til højre).
+            3. Vælg **Import og eksport** i menuen til venstre.
+            4. Vælg filen `google_kalender.csv` og klik på **Importér**.
+            """)
+            
+        with st.expander("🔴 Vejledning til Microsoft Outlook"):
+            st.write("""
+            1. Åbn Outlook på din computer.
+            2. Gå til **Filer** > **Åbn og eksportér** > **Importér/eksportér**.
+            3. Vælg **Importér fra et andet program eller fil** -> **Semikolonseparerede værdier (CSV)**.
+            4. Find `outlook_kalender.csv` og vælg din kalender som destination.
+            """)
+            
+        with st.expander("🍏 Vejledning til Apple (iPhone & Mac)"):
+            st.write("""
+            **På iPhone:** Send filen `apple_kalender.ics` til dig selv i en besked eller mail. Tryk på filen og vælg **Tilføj alle**.
+            
+            **På Mac:** Åbn Kalender-appen. Gå til **Arkiv** > **Importér** og vælg `apple_kalender.ics`.
+            """)
     else:
         st.error("Fejl i læsning af PDF.")
